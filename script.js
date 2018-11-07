@@ -1,80 +1,47 @@
-// ---------------- practice: big scary birds
+/* STRETCH GOALS */
 
-class bigScaryBird {
-
-  constructor (props) {
-    this.height = props.height
-    this.flightless = true
-    this.name = props.name
-    this.isExtinct = props.isExtinct
-    this.running_speed = props.running_speed
-  }
-
-  toString () {
-    console.log(`Damn. Just look at that thing. It's called a ${this.name}. The brochure says it's ${this.height} tall. It can top ${this.running_speed} mph running!`);
-  }
-
-}
-
-const kori_bustard = new bigScaryBird({
-  height: "4' 11\"",
-  name: "kori bustard",
-  isExtinct: false,
-  running_speed: 16
-});
-
-const great_bustard = new bigScaryBird({
-  height: "3' 5\"",
-  name: "Great bustard",
-  isExtinct: false,
-  running_speed: 11
-});
-
-const beaky_buzzard = new bigScaryBird({
-  height: "3' 0\"",
-  name: "Beaky Buzzard",
-  isExtinct: true,
-  running_speed: 3
-});
-
-kori_bustard.toString();
-great_bustard.toString();
-beaky_buzzard.toString();
-
-// ---------------- practice: calculated properties
+// 1. Allow a restaurant to define the items in its combo meal, based on
+// items from the menu (i.e. this.menu.breadsticks), using a setter. 
+// Then have your comboPrice getter use the combo property created by 
+// the setter instead of the hard-coded menu items to calculate the cost.
+// 2. Make sure that the value of the combo property is an array before setting it.
 
 class Restaurant {
+
   constructor (props) {
-      this.comboDiscount = props.discount
-      this.menu = props.menu
+      this.discount = props.discount;
+      this.menu = props.menu;
   }
 
-  get combo() {
-    let comboPrice = this.menu.fries + this.menu.burger
-    return `$${(comboPrice * this.comboDiscount).toFixed(2)}`
+  // check if items is an array and set value of _combo (_ is needed to prevent recursive
+  // call of setter with this.combo)
+  set combo (items) {
+    if (items.constructor === Array) {
+      this._combo = items;
+    } else {
+      console.log("'items' is not an array.");
+    }
   }
 
-  set combo(price) {
-    this.comboPrice = price;
+  get combo () {
+    this.comboPrice = this._combo.reduce((total, next) => total + next) * this.discount;
+    return console.log(`The combo price is ${this.comboPrice}`);
   }
+
 }
 
-let bobsBurgers = new Restaurant({
-  discount: 0.85,
+let PizzaHut = new Restaurant({
+  discount: 0.8,
   menu: {
-      fries: 1.29,
-      burger: 3.69
+      pizza: 10.00,
+      drink: 2.50
   }
 })
 
-// Note the lack of parenthesis after comboPrice. It's a property. 
-// console.log(bobsBurgers.comboPrice);
-
-// It is also a read-only property since you did not define a setter. 
-// So while the following code will not throw an error, it won't 
-// change the output.
-console.log(bobsBurgers)
-console.log(bobsBurgers.combo)
-// bobsBurgers.comboPrice(29.99);
-bobsBurgers.combo = 29.99;
-console.log(bobsBurgers.comboPrice);
+// call stter and provide array of menu items ($) to be included in getter calculation
+// of comboPrice
+PizzaHut.combo = [PizzaHut.menu.pizza, PizzaHut.menu.drink];
+// call getter to return information about comboPrice
+PizzaHut.combo;
+// check new value of comboPrice
+console.log(PizzaHut.comboPrice)
